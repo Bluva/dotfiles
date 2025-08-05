@@ -8,7 +8,7 @@ Arch Linux setup with i3, Neovim, Polybar, and more.
 git clone https://github.com/Bluva/dotfiles.git
 cp -r dotfiles/.config/* ~/.config/
 cp dotfiles/.bashrc ~/
-
+```
 ## Notes
 
 - **Window manager:** i3
