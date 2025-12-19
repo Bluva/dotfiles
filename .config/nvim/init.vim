@@ -15,6 +15,7 @@ Plug 'preservim/nerdtree' " NerdTree
 Plug 'tc50cal/vim-terminal' " Vim Terminal
 Plug 'sitiom/nvim-numbertoggle' " Number toggle
 Plug 'terryma/vim-multiple-cursors' " CTRL + N for multiple cursors
+Plug 'lervag/vimtex' " LaTeX preview
 
 " Autocompletion
 Plug 'neovim/nvim-lspconfig'
@@ -25,6 +26,8 @@ Plug 'hrsh7th/cmp-buffer'
 call plug#end()
 
 nnoremap <C-t> :NERDTreeToggle<CR>
+
+nnoremap <leader>t :%s/\s\+$//e
 
 "Paste
 nnoremap <leader>y "+y
@@ -37,14 +40,31 @@ vnoremap <leader>x "+x
 lua << EOF
 local cmp = require'cmp'
 cmp.setup({
-  mapping = cmp.mapping.preset.insert({
-    ['<Tab>'] = cmp.mapping.select_next_item(),
-    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-  }),
   completion = {
+    autocomplete = false,
     keyword_length = 2,
   },
+
+  mapping = {
+    ['<Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      else
+        cmp.complete() -- 👈 show suggestions only when TAB is pressed
+      end
+    end,
+
+    ['<S-Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end,
+
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  },
+
   performance = {
     max_view_entries = 10,
   },
@@ -70,6 +90,11 @@ set guicursor=n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-CursorInsert/lCursor,r-cr
 
 highlight Cursor guifg=NONE guibg=white
 highlight CursorInsert guifg=NONE guibg=white
+
+" LaTeX
+let g:vimtex_view_method = 'zathura'
+let g:vimtex_compiler_method = 'latexmk'
+let g:vimtex_clean_on_quit = 1
 
 " --- VS Code Dark+ inspired theme ---
 set termguicolors
